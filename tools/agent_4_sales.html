@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cold Outreach Subject Line Analyzer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #1a202c; color: #e2e8f0; }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen">
+    <header class="w-full py-4 bg-gray-800 text-center">
+        <h1 class="text-2xl font-bold text-white">Cold Outreach Subject Line Analyzer</h1>
+        <div class="mt-2">
+            <button onclick="shareTool()" class="px-4 py-2 bg-blue-600 text-white rounded mr-2">Share Tool</button>
+            <button onclick="supportDeveloper()" class="px-4 py-2 bg-green-600 text-white rounded">Support Developer</button>
+        </div>
+    </header>
+    <main class="w-full max-w-lg mt-8 mx-4">
+        <textarea id="subjectLine" class="w-full p-2 bg-gray-700 border border-gray-600 rounded" rows="3" placeholder="Enter your subject line here..."></textarea>
+        <button onclick="analyzeSubjectLine()" class="w-full mt-4 py-2 bg-indigo-600 text-white rounded">Analyze</button>
+        <div id="result" class="mt-4 p-2 bg-gray-700 border border-gray-600 rounded"></div>
+    </main>
+    <script>
+        function analyzeSubjectLine() {
+            const subjectLine = document.getElementById('subjectLine').value;
+            let analysis = '';
+            
+            if (!subjectLine) {
+                analysis = 'Please enter a subject line.';
+            } else {
+                const length = subjectLine.length;
+                const hasQuestion = /[?]/.test(subjectLine);
+                const hasNumber = /\d/.test(subjectLine);
+                const hasUrgency = /(urgent|important|asap|now)/i.test(subjectLine);
+                
+                analysis += `Length: ${length} characters.<br>`;
+                analysis += hasQuestion ? 'Contains a question.<br>' : '';
+                analysis += hasNumber ? 'Contains a number.<br>' : '';
+                analysis += hasUrgency ? 'Conveys urgency.<br>' : '';
+                
+                if (!hasQuestion && !hasNumber && !hasUrgency) {
+                    analysis += 'Try adding a question, number, or urgency for better engagement.';
+                }
+            }
+            
+            document.getElementById('result').innerHTML = analysis;
+        }
+
+        function shareTool() {
+            alert('Share this tool with your friends!');
+        }
+
+        function supportDeveloper() {
+            alert('Thank you for considering to support the developer!');
+        }
+    </script>
+</body>
+</html>

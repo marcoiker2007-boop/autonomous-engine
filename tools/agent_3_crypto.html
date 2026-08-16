@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 Gas Fee & Gwei Profit Estimator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body class="font-sans p-4">
+    <div class="max-w-xl mx-auto">
+        <div class="bg-gray-800 p-4 rounded-lg shadow-lg mb-6 flex justify-between items-center">
+            <h1 class="text-xl font-bold">Web3 Gas Fee & Gwei Profit Estimator</h1>
+            <div>
+                <button onclick="shareTool()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Share Tool</button>
+                <button onclick="supportDeveloper()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
+            </div>
+        </div>
+        <div class="bg-gray-900 p-6 rounded-lg shadow-lg">
+            <div class="mb-4">
+                <label for="gasPrice" class="block text-sm font-medium mb-2">Current Gas Price (Gwei)</label>
+                <input type="number" id="gasPrice" class="w-full p-2 rounded text-black" placeholder="Enter current gas price">
+            </div>
+            <div class="mb-4">
+                <label for="transactionCost" class="block text-sm font-medium mb-2">Transaction Cost (ETH)</label>
+                <input type="number" id="transactionCost" class="w-full p-2 rounded text-black" placeholder="Enter transaction cost in ETH">
+            </div>
+            <div class="mb-4">
+                <label for="futureGasPrice" class="block text-sm font-medium mb-2">Estimated Future Gas Price (Gwei)</label>
+                <input type="number" id="futureGasPrice" class="w-full p-2 rounded text-black" placeholder="Enter estimated future gas price">
+            </div>
+            <button onclick="calculateProfit()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">Calculate</button>
+            <div id="result" class="mt-4 text-lg font-medium"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateProfit() {
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value);
+            const transactionCost = parseFloat(document.getElementById('transactionCost').value);
+            const futureGasPrice = parseFloat(document.getElementById('futureGasPrice').value);
+
+            if (isNaN(gasPrice) || isNaN(transactionCost) || isNaN(futureGasPrice)) {
+                document.getElementById('result').innerText = "Please enter valid numbers for all fields.";
+                return;
+            }
+
+            const gasPriceDifference = futureGasPrice - gasPrice;
+            const profit = gasPriceDifference * transactionCost;
+
+            document.getElementById('result').innerText = `Estimated Profit: ${profit.toFixed(4)} ETH`;
+        }
+
+        function shareTool() {
+            alert("Share functionality is not implemented.");
+        }
+
+        function supportDeveloper() {
+            alert("Support functionality is not implemented.");
+        }
+    </script>
+</body>
+
+</html>

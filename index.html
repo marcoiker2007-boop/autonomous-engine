@@ -1,60 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit Converter</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #1a202c; color: #cbd5e0; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous Venture Hub</title>
+  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
 </head>
-<body class="flex items-center justify-center min-h-screen">
-    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
-        <h1 class="text-2xl font-bold mb-6 text-center">Unit Converter</h1>
-        <div class="mb-4">
-            <label class="block text-sm mb-2">Enter Value:</label>
-            <input id="inputValue" type="number" class="w-full px-4 py-2 border rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm mb-2">From:</label>
-            <select id="fromUnit" class="w-full px-4 py-2 border rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
-                <option value="meters">Meters</option>
-                <option value="kilometers">Kilometers</option>
-                <option value="feet">Feet</option>
-                <option value="miles">Miles</option>
-            </select>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm mb-2">To:</label>
-            <select id="toUnit" class="w-full px-4 py-2 border rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-600">
-                <option value="meters">Meters</option>
-                <option value="kilometers">Kilometers</option>
-                <option value="feet">Feet</option>
-                <option value="miles">Miles</option>
-            </select>
-        </div>
-        <button onclick="convert()" class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600">Convert</button>
-        <div class="mt-6">
-            <label class="block text-sm mb-2">Converted Value:</label>
-            <div id="outputValue" class="text-lg font-semibold">0</div>
-        </div>
-    </div>
-    <script>
-        const conversionRates = {
-            meters: { meters: 1, kilometers: 0.001, feet: 3.28084, miles: 0.000621371 },
-            kilometers: { meters: 1000, kilometers: 1, feet: 3280.84, miles: 0.621371 },
-            feet: { meters: 0.3048, kilometers: 0.0003048, feet: 1, miles: 0.000189394 },
-            miles: { meters: 1609.34, kilometers: 1.60934, feet: 5280, miles: 1 }
-        };
+<body class="bg-slate-950 text-slate-100 min-h-screen p-8 flex flex-col items-center">
+  <div class="max-w-4xl w-full">
+    <header class="mb-10 text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">
+        Autonomous Agent Product Farm
+      </h1>
+      <p class="text-slate-400 mt-2 text-sm">Self-deployed micro-utility network running continuous iteration loops.</p>
+    </header>
 
-        function convert() {
-            const inputValue = parseFloat(document.getElementById('inputValue').value);
-            const fromUnit = document.getElementById('fromUnit').value;
-            const toUnit = document.getElementById('toUnit').value;
-            const convertedValue = inputValue * conversionRates[fromUnit][toUnit];
-            document.getElementById('outputValue').innerText = isNaN(convertedValue) ? 'Invalid Input' : convertedValue.toFixed(4);
-        }
-    </script>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl hover:border-indigo-500 transition shadow-lg">
+        <span class="text-xs uppercase tracking-wider text-indigo-400 font-semibold">Marketing & SEO</span>
+        <h2 class="text-xl font-bold text-slate-100 mt-1 mb-3">Live Meta & OpenGraph Previewer</h2>
+        <a href="tools/agent_1_seo.html" class="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg text-sm transition">
+          Launch Utility &rarr;
+        </a>
+      </div>
+      
+      <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl hover:border-indigo-500 transition shadow-lg">
+        <span class="text-xs uppercase tracking-wider text-indigo-400 font-semibold">Developer Tools</span>
+        <h2 class="text-xl font-bold text-slate-100 mt-1 mb-3">JSON to TypeScript / Python Type Converter</h2>
+        <a href="tools/agent_2_dev.html" class="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg text-sm transition">
+          Launch Utility &rarr;
+        </a>
+      </div>
+      
+      <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl hover:border-indigo-500 transition shadow-lg">
+        <span class="text-xs uppercase tracking-wider text-indigo-400 font-semibold">Crypto & Finance</span>
+        <h2 class="text-xl font-bold text-slate-100 mt-1 mb-3">Web3 Gas Fee & Gwei Profit Estimator</h2>
+        <a href="tools/agent_3_crypto.html" class="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg text-sm transition">
+          Launch Utility &rarr;
+        </a>
+      </div>
+      
+      <div class="p-6 bg-slate-900 border border-slate-800 rounded-xl hover:border-indigo-500 transition shadow-lg">
+        <span class="text-xs uppercase tracking-wider text-indigo-400 font-semibold">Copywriting</span>
+        <h2 class="text-xl font-bold text-slate-100 mt-1 mb-3">Cold Outreach Subject Line Analyzer</h2>
+        <a href="tools/agent_4_sales.html" class="inline-block px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg text-sm transition">
+          Launch Utility &rarr;
+        </a>
+      </div>
+      
+    </div>
+  </div>
 </body>
 </html>

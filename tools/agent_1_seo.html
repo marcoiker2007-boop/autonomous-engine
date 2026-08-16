@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta & OpenGraph Previewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #1f2937; color: #f9fafb; }
+        .banner { background-color: #111827; }
+    </style>
+</head>
+<body>
+    <div class="banner p-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold">Meta & OpenGraph Previewer</h1>
+        <div>
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Share Tool</button>
+            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
+        </div>
+    </div>
+    <div class="p-6">
+        <label for="url" class="block text-sm font-medium text-gray-400">Enter URL:</label>
+        <input type="text" id="url" class="mt-1 block w-full px-3 py-2 bg-gray-800 text-gray-200 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="https://example.com">
+        <button id="preview-btn" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Preview</button>
+    </div>
+    <div id="preview" class="p-6">
+        <!-- Preview will be displayed here -->
+    </div>
+    <script>
+        document.getElementById('preview-btn').addEventListener('click', function() {
+            const url = document.getElementById('url').value;
+            fetch('https://cors-anywhere.herokuapp.com/' + url)
+                .then(response => response.text())
+                .then(html => {
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+                    const metaTags = doc.querySelectorAll('meta');
+                    let output = '<div class="space-y-4">';
+                    metaTags.forEach(tag => {
+                        const property = tag.getAttribute('property') || tag.getAttribute('name');
+                        const content = tag.getAttribute('content');
+                        if (property && content) {
+                            output += `<div class="bg-gray-800 p-4 rounded"><strong>${property}</strong>: ${content}</div>`;
+                        }
+                    });
+                    output += '</div>';
+                    document.getElementById('preview').innerHTML = output;
+                })
+                .catch(error => {
+                    document.getElementById('preview').innerHTML = `<div class="text-red-500">Error fetching data: ${error}</div>`;
+                });
+        });
+    </script>
+</body>
+</html>
