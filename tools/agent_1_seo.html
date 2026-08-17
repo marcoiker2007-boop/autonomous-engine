@@ -3,52 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meta & OpenGraph Previewer</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Live Meta & OpenGraph Previewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #1f2937; color: #f9fafb; }
-        .banner { background-color: #111827; }
+        body { background-color: #1a202c; color: #cbd5e0; }
+        header { background-color: #2d3748; }
+        input, textarea { background-color: #2d3748; color: #e2e8f0; }
     </style>
 </head>
-<body>
-    <div class="banner p-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold">Meta & OpenGraph Previewer</h1>
+<body class="font-sans">
+    <header class="flex justify-between items-center p-4 shadow-lg">
+        <h1 class="text-lg font-bold">Live Meta & OpenGraph Previewer</h1>
         <div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Share Tool</button>
-            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
+            <button onclick="shareTool()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Share Tool</button>
+            <button onclick="supportDeveloper()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
         </div>
-    </div>
-    <div class="p-6">
-        <label for="url" class="block text-sm font-medium text-gray-400">Enter URL:</label>
-        <input type="text" id="url" class="mt-1 block w-full px-3 py-2 bg-gray-800 text-gray-200 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="https://example.com">
-        <button id="preview-btn" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Preview</button>
-    </div>
-    <div id="preview" class="p-6">
-        <!-- Preview will be displayed here -->
-    </div>
+    </header>
+    <main class="p-4">
+        <div class="mb-4">
+            <label for="metaTagsInput" class="block text-sm font-medium mb-2">Enter Meta Tags:</label>
+            <textarea id="metaTagsInput" class="w-full p-2 rounded" rows="5" placeholder="<meta name='description' content='...'>\n<meta property='og:title' content='...'>"></textarea>
+        </div>
+        <div>
+            <button onclick="previewMetaTags()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Preview</button>
+        </div>
+        <div id="preview" class="mt-4 p-4 bg-gray-800 rounded"></div>
+    </main>
     <script>
-        document.getElementById('preview-btn').addEventListener('click', function() {
-            const url = document.getElementById('url').value;
-            fetch('https://cors-anywhere.herokuapp.com/' + url)
-                .then(response => response.text())
-                .then(html => {
-                    const doc = new DOMParser().parseFromString(html, 'text/html');
-                    const metaTags = doc.querySelectorAll('meta');
-                    let output = '<div class="space-y-4">';
-                    metaTags.forEach(tag => {
-                        const property = tag.getAttribute('property') || tag.getAttribute('name');
-                        const content = tag.getAttribute('content');
-                        if (property && content) {
-                            output += `<div class="bg-gray-800 p-4 rounded"><strong>${property}</strong>: ${content}</div>`;
-                        }
-                    });
-                    output += '</div>';
-                    document.getElementById('preview').innerHTML = output;
-                })
-                .catch(error => {
-                    document.getElementById('preview').innerHTML = `<div class="text-red-500">Error fetching data: ${error}</div>`;
-                });
-        });
+        function shareTool() {
+            navigator.share({ title: 'Live Meta & OpenGraph Previewer', url: window.location.href });
+        }
+
+        function supportDeveloper() {
+            window.open('https://www.buymeacoffee.com/', '_blank');
+        }
+
+        function previewMetaTags() {
+            const input = document.getElementById('metaTagsInput').value;
+            const previewDiv = document.getElementById('preview');
+            previewDiv.innerHTML = input ? input : '<p class="text-red-500">Please enter valid meta tags.</p>';
+        }
     </script>
 </body>
 </html>

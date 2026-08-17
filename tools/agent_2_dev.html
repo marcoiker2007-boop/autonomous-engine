@@ -6,91 +6,78 @@
     <title>JSON to TypeScript/Python Converter</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #1a202c;
-        }
+        body { background-color: #1a202c; color: #cbd5e0; }
+        .banner { background-color: #2d3748; padding: 10px; text-align: center; }
+        .banner button { margin: 0 5px; }
     </style>
 </head>
-<body class="text-white">
+<body>
+    <div class="banner">
+        <button class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded" onclick="shareTool()">Share Tool</button>
+        <button class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded" onclick="supportDeveloper()">Support Developer</button>
+    </div>
     <div class="container mx-auto p-4">
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-2xl font-bold">JSON to TypeScript/Python Converter</h1>
-            <div>
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Share Tool</button>
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
-            </div>
+        <h1 class="text-center text-3xl mb-4">JSON to TypeScript/Python Converter</h1>
+        <div class="flex justify-center">
+            <textarea id="jsonInput" class="w-1/2 h-64 p-2 bg-gray-800 text-white rounded focus:outline-none" placeholder="Paste your JSON here..."></textarea>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="col-span-1 md:col-span-1">
-                <textarea id="jsonInput" class="w-full h-64 p-2 bg-gray-800 text-white rounded" placeholder="Paste JSON here..."></textarea>
-                <button id="convertBtn" class="mt-2 w-full bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">Convert</button>
-            </div>
-            <div class="col-span-1 md:col-span-1">
-                <h2 class="text-xl font-bold mb-2">TypeScript</h2>
-                <pre id="typescriptOutput" class="w-full h-64 p-2 bg-gray-800 text-white rounded overflow-auto"></pre>
-            </div>
-            <div class="col-span-1 md:col-span-1">
-                <h2 class="text-xl font-bold mb-2">Python</h2>
-                <pre id="pythonOutput" class="w-full h-64 p-2 bg-gray-800 text-white rounded overflow-auto"></pre>
-            </div>
+        <div class="flex justify-center my-4">
+            <button id="convertTS" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mx-2">Convert to TypeScript</button>
+            <button id="convertPy" class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded mx-2">Convert to Python</button>
+        </div>
+        <div class="flex justify-center">
+            <textarea id="output" class="w-1/2 h-64 p-2 bg-gray-800 text-white rounded focus:outline-none" placeholder="Converted code will appear here..." readonly></textarea>
         </div>
     </div>
     <script>
-        document.getElementById('convertBtn').addEventListener('click', function() {
-            const jsonInput = document.getElementById('jsonInput').value.trim();
-            let jsonObject;
-            try {
-                jsonObject = JSON.parse(jsonInput);
-            } catch (err) {
-                alert('Invalid JSON');
-                return;
+        function shareTool() {
+            alert('Share this tool with others!');
+        }
+
+        function supportDeveloper() {
+            alert('Support the developer by sharing this tool!');
+        }
+
+        function jsonToTypeScript(json) {
+            // Basic conversion logic; a real-world scenario would need a more complex solution
+            let parsed = JSON.parse(json);
+            let tsTypes = 'interface ConvertedType {\n';
+            for (let key in parsed) {
+                tsTypes += `  ${key}: ${typeof parsed[key]};\n`;
             }
+            tsTypes += '}';
+            return tsTypes;
+        }
 
-            const typeScriptOutput = convertJSONToTypeScript(jsonObject);
-            document.getElementById('typescriptOutput').textContent = typeScriptOutput;
+        function jsonToPython(json) {
+            // Basic conversion logic; a real-world scenario would need a more complex solution
+            let parsed = JSON.parse(json);
+            let pyTypes = 'class ConvertedType:\n';
+            for (let key in parsed) {
+                pyTypes += `  ${key}: ${typeof parsed[key]}\n`;
+            }
+            return pyTypes;
+        }
 
-            const pythonOutput = convertJSONToPython(jsonObject);
-            document.getElementById('pythonOutput').textContent = pythonOutput;
+        document.getElementById('convertTS').addEventListener('click', function() {
+            let jsonInput = document.getElementById('jsonInput').value;
+            try {
+                let result = jsonToTypeScript(jsonInput);
+                document.getElementById('output').value = result;
+            } catch (error) {
+                document.getElementById('output').value = 'Invalid JSON';
+            }
         });
 
-        function convertJSONToTypeScript(jsonObject) {
-            let result = 'interface RootObject {\n';
-            for (const key in jsonObject) {
-                const type = typeof jsonObject[key];
-                result += `  ${key}: ${mapType(type)};\n`;
+        document.getElementById('convertPy').addEventListener('click', function() {
+            let jsonInput = document.getElementById('jsonInput').value;
+            try {
+                let result = jsonToPython(jsonInput);
+                document.getElementById('output').value = result;
+            } catch (error) {
+                document.getElementById('output').value = 'Invalid JSON';
             }
-            result += '}';
-            return result;
-        }
-
-        function mapType(type) {
-            switch(type) {
-                case 'string': return 'string';
-                case 'number': return 'number';
-                case 'boolean': return 'boolean';
-                case 'object': return 'any';
-                default: return 'any';
-            }
-        }
-
-        function convertJSONToPython(jsonObject) {
-            let result = 'class RootObject:\n';
-            for (const key in jsonObject) {
-                const type = typeof jsonObject[key];
-                result += `    ${key}: ${mapPythonType(type)}\n`;
-            }
-            return result;
-        }
-
-        function mapPythonType(type) {
-            switch(type) {
-                case 'string': return 'str';
-                case 'number': return 'float';
-                case 'boolean': return 'bool';
-                case 'object': return 'Any';
-                default: return 'Any';
-            }
-        }
+        });
     </script>
 </body>
 </html>

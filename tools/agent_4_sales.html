@@ -6,46 +6,53 @@
     <title>Cold Outreach Subject Line Analyzer</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        body { background-color: #1a202c; color: #e2e8f0; }
+        body {
+            background-color: #1a1a1a;
+            color: #f3f4f6;
+        }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen">
-    <header class="w-full py-4 bg-gray-800 text-center">
-        <h1 class="text-2xl font-bold text-white">Cold Outreach Subject Line Analyzer</h1>
-        <div class="mt-2">
-            <button onclick="shareTool()" class="px-4 py-2 bg-blue-600 text-white rounded mr-2">Share Tool</button>
-            <button onclick="supportDeveloper()" class="px-4 py-2 bg-green-600 text-white rounded">Support Developer</button>
+<body class="flex flex-col items-center justify-start min-h-screen p-4 space-y-6">
+    <header class="w-full p-4 bg-gray-800 shadow-md">
+        <div class="flex justify-between items-center">
+            <h1 class="text-xl font-bold text-white">Cold Outreach Subject Line Analyzer</h1>
+            <div>
+                <button onclick="shareTool()" class="px-4 py-2 mx-2 text-gray-200 bg-blue-600 rounded hover:bg-blue-700">Share Tool</button>
+                <button onclick="supportDeveloper()" class="px-4 py-2 mx-2 text-gray-200 bg-green-600 rounded hover:bg-green-700">Support Developer</button>
+            </div>
         </div>
     </header>
-    <main class="w-full max-w-lg mt-8 mx-4">
-        <textarea id="subjectLine" class="w-full p-2 bg-gray-700 border border-gray-600 rounded" rows="3" placeholder="Enter your subject line here..."></textarea>
-        <button onclick="analyzeSubjectLine()" class="w-full mt-4 py-2 bg-indigo-600 text-white rounded">Analyze</button>
-        <div id="result" class="mt-4 p-2 bg-gray-700 border border-gray-600 rounded"></div>
+    <main class="flex flex-col items-center w-full max-w-lg p-4 bg-gray-900 rounded shadow-md">
+        <textarea id="subjectLine" class="w-full p-2 mb-4 text-black rounded" rows="3" placeholder="Enter your subject line here..."></textarea>
+        <button onclick="analyzeSubjectLine()" class="w-full px-4 py-2 text-gray-200 bg-purple-600 rounded hover:bg-purple-700">Analyze</button>
+        <div id="result" class="w-full mt-4 text-center"></div>
     </main>
     <script>
         function analyzeSubjectLine() {
-            const subjectLine = document.getElementById('subjectLine').value;
-            let analysis = '';
+            const input = document.getElementById('subjectLine').value.trim();
+            const resultDiv = document.getElementById('result');
             
-            if (!subjectLine) {
-                analysis = 'Please enter a subject line.';
-            } else {
-                const length = subjectLine.length;
-                const hasQuestion = /[?]/.test(subjectLine);
-                const hasNumber = /\d/.test(subjectLine);
-                const hasUrgency = /(urgent|important|asap|now)/i.test(subjectLine);
-                
-                analysis += `Length: ${length} characters.<br>`;
-                analysis += hasQuestion ? 'Contains a question.<br>' : '';
-                analysis += hasNumber ? 'Contains a number.<br>' : '';
-                analysis += hasUrgency ? 'Conveys urgency.<br>' : '';
-                
-                if (!hasQuestion && !hasNumber && !hasUrgency) {
-                    analysis += 'Try adding a question, number, or urgency for better engagement.';
-                }
+            if (input === '') {
+                resultDiv.textContent = 'Please enter a subject line.';
+                return;
             }
             
-            document.getElementById('result').innerHTML = analysis;
+            let score = 0;
+            if (input.length <= 50) score += 10;
+            if (/[A-Z]/.test(input)) score += 10;
+            if (/\d/.test(input)) score += 10;
+            if (/[\!\?]/.test(input)) score += 10;
+            
+            let analysis = `Your subject line score: ${score} / 40. `;
+            if (score <= 20) {
+                analysis += 'Consider making it more engaging.';
+            } else if (score <= 30) {
+                analysis += 'Good effort, but there\'s room for improvement.';
+            } else {
+                analysis += 'Great job! Your subject line is strong.';
+            }
+            
+            resultDiv.textContent = analysis;
         }
 
         function shareTool() {
@@ -53,7 +60,7 @@
         }
 
         function supportDeveloper() {
-            alert('Thank you for considering to support the developer!');
+            alert('Thank you for supporting the developer!');
         }
     </script>
 </body>
