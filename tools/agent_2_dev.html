@@ -7,77 +7,76 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body { background-color: #1a202c; color: #cbd5e0; }
-        .banner { background-color: #2d3748; padding: 10px; text-align: center; }
-        .banner button { margin: 0 5px; }
     </style>
 </head>
-<body>
-    <div class="banner">
-        <button class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded" onclick="shareTool()">Share Tool</button>
-        <button class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded" onclick="supportDeveloper()">Support Developer</button>
+<body class="font-sans antialiased">
+    <div class="p-4 bg-gray-900 text-white flex justify-between items-center">
+        <h1 class="text-lg">JSON to TypeScript/Python Converter</h1>
+        <div>
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mr-2" onclick="shareTool()">Share Tool</button>
+            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded" onclick="supportDeveloper()">Support Developer</button>
+        </div>
     </div>
-    <div class="container mx-auto p-4">
-        <h1 class="text-center text-3xl mb-4">JSON to TypeScript/Python Converter</h1>
-        <div class="flex justify-center">
-            <textarea id="jsonInput" class="w-1/2 h-64 p-2 bg-gray-800 text-white rounded focus:outline-none" placeholder="Paste your JSON here..."></textarea>
+    <div class="p-6">
+        <textarea id="jsonInput" class="w-full h-40 p-2 mb-4 bg-gray-800 text-white border border-gray-600" placeholder="Paste your JSON here..."></textarea>
+        <div class="flex mb-4">
+            <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2" onclick="convertToTypeScript()">Convert to TypeScript</button>
+            <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded" onclick="convertToPython()">Convert to Python</button>
         </div>
-        <div class="flex justify-center my-4">
-            <button id="convertTS" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mx-2">Convert to TypeScript</button>
-            <button id="convertPy" class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded mx-2">Convert to Python</button>
-        </div>
-        <div class="flex justify-center">
-            <textarea id="output" class="w-1/2 h-64 p-2 bg-gray-800 text-white rounded focus:outline-none" placeholder="Converted code will appear here..." readonly></textarea>
-        </div>
+        <textarea id="output" class="w-full h-40 p-2 bg-gray-800 text-white border border-gray-600" placeholder="Output will appear here..." readonly></textarea>
     </div>
     <script>
         function shareTool() {
-            alert('Share this tool with others!');
+            alert('Sharing functionality is not implemented.');
         }
 
         function supportDeveloper() {
-            alert('Support the developer by sharing this tool!');
+            alert('Support functionality is not implemented.');
         }
 
-        function jsonToTypeScript(json) {
-            // Basic conversion logic; a real-world scenario would need a more complex solution
-            let parsed = JSON.parse(json);
-            let tsTypes = 'interface ConvertedType {\n';
-            for (let key in parsed) {
-                tsTypes += `  ${key}: ${typeof parsed[key]};\n`;
-            }
-            tsTypes += '}';
-            return tsTypes;
-        }
-
-        function jsonToPython(json) {
-            // Basic conversion logic; a real-world scenario would need a more complex solution
-            let parsed = JSON.parse(json);
-            let pyTypes = 'class ConvertedType:\n';
-            for (let key in parsed) {
-                pyTypes += `  ${key}: ${typeof parsed[key]}\n`;
-            }
-            return pyTypes;
-        }
-
-        document.getElementById('convertTS').addEventListener('click', function() {
-            let jsonInput = document.getElementById('jsonInput').value;
+        function convertToTypeScript() {
+            const jsonInput = document.getElementById('jsonInput').value;
             try {
-                let result = jsonToTypeScript(jsonInput);
-                document.getElementById('output').value = result;
+                const jsonObject = JSON.parse(jsonInput);
+                const typeScript = jsonToTypeScript(jsonObject);
+                document.getElementById('output').value = typeScript;
             } catch (error) {
-                document.getElementById('output').value = 'Invalid JSON';
+                alert('Invalid JSON');
             }
-        });
+        }
 
-        document.getElementById('convertPy').addEventListener('click', function() {
-            let jsonInput = document.getElementById('jsonInput').value;
+        function convertToPython() {
+            const jsonInput = document.getElementById('jsonInput').value;
             try {
-                let result = jsonToPython(jsonInput);
-                document.getElementById('output').value = result;
+                const jsonObject = JSON.parse(jsonInput);
+                const python = jsonToPython(jsonObject);
+                document.getElementById('output').value = python;
             } catch (error) {
-                document.getElementById('output').value = 'Invalid JSON';
+                alert('Invalid JSON');
             }
-        });
+        }
+
+        function jsonToTypeScript(obj, indent = '  ') {
+            let output = '';
+            for (let key in obj) {
+                const value = obj[key];
+                const type = Array.isArray(value) ? 'any[]' : typeof value;
+                output += `${indent}${key}: ${type};\n`;
+            }
+            return `interface RootObject {\n${output}}\n`;
+        }
+
+        function jsonToPython(obj, indent = '    ') {
+            let output = 'class RootObject:\n';
+            for (let key in obj) {
+                let type = typeof obj[key];
+                if (Array.isArray(obj[key])) type = 'list';
+                if (obj[key] === null) type = 'Any';
+
+                output += `${indent}${key}: ${type}\n`;
+            }
+            return `${output}`;
+        }
     </script>
 </body>
 </html>

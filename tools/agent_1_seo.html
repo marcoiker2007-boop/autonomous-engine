@@ -6,42 +6,53 @@
     <title>Live Meta & OpenGraph Previewer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #1a202c; color: #cbd5e0; }
-        header { background-color: #2d3748; }
-        input, textarea { background-color: #2d3748; color: #e2e8f0; }
+        body {
+            background-color: #1a202c; /* Dark mode background */
+            color: #f7fafc; /* Light text color */
+        }
     </style>
 </head>
-<body class="font-sans">
-    <header class="flex justify-between items-center p-4 shadow-lg">
-        <h1 class="text-lg font-bold">Live Meta & OpenGraph Previewer</h1>
-        <div>
-            <button onclick="shareTool()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Share Tool</button>
-            <button onclick="supportDeveloper()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
+<body class="flex flex-col items-center p-4 space-y-4">
+    <header class="w-full flex justify-between items-center py-4 bg-gray-800 px-6 shadow-lg">
+        <h1 class="text-xl font-bold text-white">Meta & OpenGraph Previewer</h1>
+        <div class="space-x-4">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="shareTool()">Share Tool</button>
+            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="supportDeveloper()">Support Developer</button>
         </div>
     </header>
-    <main class="p-4">
-        <div class="mb-4">
-            <label for="metaTagsInput" class="block text-sm font-medium mb-2">Enter Meta Tags:</label>
-            <textarea id="metaTagsInput" class="w-full p-2 rounded" rows="5" placeholder="<meta name='description' content='...'>\n<meta property='og:title' content='...'>"></textarea>
-        </div>
+
+    <main class="w-full max-w-3xl space-y-4">
         <div>
-            <button onclick="previewMetaTags()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Preview</button>
+            <label for="meta-input" class="block text-sm font-medium">Enter Meta & OpenGraph Tags:</label>
+            <textarea id="meta-input" class="w-full mt-1 p-2 bg-gray-700 text-white rounded border border-gray-600 focus:outline-none focus:border-blue-500" rows="10"
+                placeholder="<meta name='description' content='Example description'>"></textarea>
         </div>
-        <div id="preview" class="mt-4 p-4 bg-gray-800 rounded"></div>
+        <div class="bg-gray-900 p-4 rounded shadow-lg">
+            <h2 class="text-lg font-semibold">Live Preview</h2>
+            <div id="preview" class="mt-2 p-4 bg-gray-800 rounded border border-gray-700">
+                <!-- Live preview content appears here -->
+            </div>
+        </div>
     </main>
+
     <script>
+        document.getElementById('meta-input').addEventListener('input', updatePreview);
+
+        function updatePreview() {
+            const input = document.getElementById('meta-input').value;
+            const preview = document.getElementById('preview');
+            preview.innerHTML = input;
+        }
+
         function shareTool() {
-            navigator.share({ title: 'Live Meta & OpenGraph Previewer', url: window.location.href });
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Tool URL copied to clipboard!');
+            });
         }
 
         function supportDeveloper() {
-            window.open('https://www.buymeacoffee.com/', '_blank');
-        }
-
-        function previewMetaTags() {
-            const input = document.getElementById('metaTagsInput').value;
-            const previewDiv = document.getElementById('preview');
-            previewDiv.innerHTML = input ? input : '<p class="text-red-500">Please enter valid meta tags.</p>';
+            window.open('https://www.buymeacoffee.com/developer', '_blank');
         }
     </script>
 </body>

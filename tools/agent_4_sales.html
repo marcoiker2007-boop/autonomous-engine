@@ -6,61 +6,51 @@
     <title>Cold Outreach Subject Line Analyzer</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #1a1a1a;
-            color: #f3f4f6;
-        }
+        body { background-color: #1a202c; color: #f7fafc; }
+        .btn { transition: background-color 0.2s; }
     </style>
 </head>
-<body class="flex flex-col items-center justify-start min-h-screen p-4 space-y-6">
-    <header class="w-full p-4 bg-gray-800 shadow-md">
-        <div class="flex justify-between items-center">
-            <h1 class="text-xl font-bold text-white">Cold Outreach Subject Line Analyzer</h1>
+<body class="flex flex-col items-center p-4">
+    <div class="w-full max-w-2xl">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold">Cold Outreach Subject Line Analyzer</h1>
             <div>
-                <button onclick="shareTool()" class="px-4 py-2 mx-2 text-gray-200 bg-blue-600 rounded hover:bg-blue-700">Share Tool</button>
-                <button onclick="supportDeveloper()" class="px-4 py-2 mx-2 text-gray-200 bg-green-600 rounded hover:bg-green-700">Support Developer</button>
+                <button class="btn bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded mr-2" onclick="shareTool()">Share Tool</button>
+                <button class="btn bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded" onclick="supportDeveloper()">Support Developer</button>
             </div>
         </div>
-    </header>
-    <main class="flex flex-col items-center w-full max-w-lg p-4 bg-gray-900 rounded shadow-md">
-        <textarea id="subjectLine" class="w-full p-2 mb-4 text-black rounded" rows="3" placeholder="Enter your subject line here..."></textarea>
-        <button onclick="analyzeSubjectLine()" class="w-full px-4 py-2 text-gray-200 bg-purple-600 rounded hover:bg-purple-700">Analyze</button>
-        <div id="result" class="w-full mt-4 text-center"></div>
-    </main>
-    <script>
-        function analyzeSubjectLine() {
-            const input = document.getElementById('subjectLine').value.trim();
-            const resultDiv = document.getElementById('result');
-            
-            if (input === '') {
-                resultDiv.textContent = 'Please enter a subject line.';
-                return;
-            }
-            
-            let score = 0;
-            if (input.length <= 50) score += 10;
-            if (/[A-Z]/.test(input)) score += 10;
-            if (/\d/.test(input)) score += 10;
-            if (/[\!\?]/.test(input)) score += 10;
-            
-            let analysis = `Your subject line score: ${score} / 40. `;
-            if (score <= 20) {
-                analysis += 'Consider making it more engaging.';
-            } else if (score <= 30) {
-                analysis += 'Good effort, but there\'s room for improvement.';
-            } else {
-                analysis += 'Great job! Your subject line is strong.';
-            }
-            
-            resultDiv.textContent = analysis;
-        }
+        <textarea id="subjectLine" class="w-full p-2 rounded bg-gray-700 text-white border-none focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="Enter your subject line here..."></textarea>
+        <button class="btn bg-purple-500 hover:bg-purple-700 text-white py-2 px-4 rounded mt-4" onclick="analyzeSubjectLine()">Analyze</button>
+        <div id="analysisResult" class="mt-4 p-4 rounded bg-gray-800"></div>
+    </div>
 
+    <script>
         function shareTool() {
-            alert('Share this tool with your friends!');
+            alert('Use this tool to analyze your cold outreach subject lines!');
         }
 
         function supportDeveloper() {
-            alert('Thank you for supporting the developer!');
+            alert('Thank you for considering support!');
+        }
+
+        function analyzeSubjectLine() {
+            const subjectLine = document.getElementById('subjectLine').value.trim();
+            const resultDiv = document.getElementById('analysisResult');
+            if (subjectLine === "") {
+                resultDiv.textContent = "Please enter a subject line.";
+                return;
+            }
+            
+            const words = subjectLine.split(/\s+/);
+            const wordCount = words.length;
+            const hasQuestion = subjectLine.includes('?');
+            const isTooLong = subjectLine.length > 50;
+
+            let feedback = `Word Count: ${wordCount}.`;
+            feedback += hasQuestion ? " Contains a question." : " Does not contain a question.";
+            feedback += isTooLong ? " Consider shortening your subject line." : " Subject line length is appropriate.";
+
+            resultDiv.textContent = feedback;
         }
     </script>
 </body>
