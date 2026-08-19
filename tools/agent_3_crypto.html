@@ -4,65 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web3 Gas Fee & Gwei Profit Estimator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #1a202c; color: #e2e8f0; }
-        button { transition: background-color 0.3s; }
-        button:hover { background-color: #2d3748; }
-    </style>
-</head>
-<body>
-    <div class="max-w-xl mx-auto p-5">
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-2xl font-bold">Gas Fee & Gwei Profit Estimator</h1>
-            <div>
-                <button class="bg-teal-500 text-white px-4 py-2 mr-2 rounded" onclick="shareTool()">Share Tool</button>
-                <button class="bg-teal-500 text-white px-4 py-2 rounded" onclick="supportDeveloper()">Support Developer</button>
-            </div>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-2">Gas Price (Gwei)</label>
-            <input type="number" id="gasPrice" class="w-full p-2 rounded bg-gray-800 text-white" placeholder="Enter gas price in Gwei">
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-2">Transaction Fee (ETH)</label>
-            <input type="number" id="transactionFee" class="w-full p-2 rounded bg-gray-800 text-white" placeholder="Enter transaction fee in ETH">
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-2">Profit Margin (%)</label>
-            <input type="number" id="profitMargin" class="w-full p-2 rounded bg-gray-800 text-white" placeholder="Enter desired profit margin">
-        </div>
-        <button class="w-full bg-teal-500 text-white px-4 py-2 rounded" onclick="calculateProfit()">Calculate</button>
-        <div id="result" class="mt-4 p-4 bg-gray-900 rounded hidden">
-            <p id="gasCost" class="text-sm mb-2"></p>
-            <p id="totalCost" class="text-sm mb-2"></p>
-            <p id="profit" class="text-sm font-bold"></p>
-        </div>
-    </div>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script>
         function calculateProfit() {
-            const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
-            const transactionFee = parseFloat(document.getElementById('transactionFee').value) || 0;
-            const profitMargin = parseFloat(document.getElementById('profitMargin').value) || 0;
-
-            const gasCost = gasPrice * transactionFee;
-            const totalCost = gasCost + transactionFee;
-            const profit = totalCost * (profitMargin / 100);
-
-            document.getElementById('gasCost').textContent = `Gas Cost: ${gasCost.toFixed(6)} ETH`;
-            document.getElementById('totalCost').textContent = `Total Cost: ${totalCost.toFixed(6)} ETH`;
-            document.getElementById('profit').textContent = `Estimated Profit: ${profit.toFixed(6)} ETH`;
-
-            document.getElementById('result').classList.remove('hidden');
+            const gasPrice = parseFloat(document.getElementById('gasPrice').value);
+            const gasUsed = parseFloat(document.getElementById('gasUsed').value);
+            const ethPrice = parseFloat(document.getElementById('ethPrice').value);
+            
+            if (!gasPrice || !gasUsed || !ethPrice) {
+                alert('Please enter valid values');
+                return;
+            }
+            
+            const gasFee = (gasPrice * gasUsed) / 1e9;
+            const gweiCost = gasFee * ethPrice;
+            document.getElementById('result').textContent = `Gas Fee: ${gasFee.toFixed(6)} ETH ($${gweiCost.toFixed(2)})`;
         }
 
         function shareTool() {
-            alert('Share this tool with your friends!');
+            alert('Share functionality is not implemented.');
         }
 
         function supportDeveloper() {
-            alert('Support the developer by donating or sharing this tool!');
+            alert('Support functionality is not implemented.');
         }
     </script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+    <div class="max-w-lg mx-auto p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">Web3 Gas Fee & Gwei Profit Estimator</h1>
+            <div>
+                <button onclick="shareTool()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded mr-2">Share Tool</button>
+                <button onclick="supportDeveloper()" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">Support Developer</button>
+            </div>
+        </div>
+        <div class="bg-gray-800 p-4 rounded shadow">
+            <div class="mb-4">
+                <label for="gasPrice" class="block text-sm font-medium mb-2">Gas Price (Gwei)</label>
+                <input type="number" id="gasPrice" class="w-full px-3 py-2 bg-gray-700 text-white rounded" placeholder="Enter Gas Price in Gwei">
+            </div>
+            <div class="mb-4">
+                <label for="gasUsed" class="block text-sm font-medium mb-2">Gas Used</label>
+                <input type="number" id="gasUsed" class="w-full px-3 py-2 bg-gray-700 text-white rounded" placeholder="Enter Gas Used">
+            </div>
+            <div class="mb-4">
+                <label for="ethPrice" class="block text-sm font-medium mb-2">ETH Price (USD)</label>
+                <input type="number" id="ethPrice" class="w-full px-3 py-2 bg-gray-700 text-white rounded" placeholder="Enter ETH Price in USD">
+            </div>
+            <button onclick="calculateProfit()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded">Calculate</button>
+            <div id="result" class="mt-4 text-lg font-semibold"></div>
+        </div>
+    </div>
 </body>
 </html>

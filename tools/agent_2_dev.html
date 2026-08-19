@@ -4,78 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON to TypeScript/Python Converter</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #1a202c; color: #cbd5e0; }
+        body { background-color: #1a202c; color: #f7fafc; }
+        .hidden { display: none; }
     </style>
 </head>
-<body class="font-sans antialiased">
-    <div class="p-4 bg-gray-900 text-white flex justify-between items-center">
-        <h1 class="text-lg">JSON to TypeScript/Python Converter</h1>
+<body class="flex flex-col items-center h-screen">
+    <header class="w-full p-4 bg-gray-800 shadow-md flex justify-between items-center">
+        <h1 class="text-xl font-bold">JSON Type Converter</h1>
         <div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded mr-2" onclick="shareTool()">Share Tool</button>
-            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded" onclick="supportDeveloper()">Support Developer</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded mr-2" onclick="shareTool()">Share Tool</button>
+            <button class="bg-green-500 text-white px-4 py-2 rounded" onclick="supportDeveloper()">Support Developer</button>
         </div>
-    </div>
-    <div class="p-6">
-        <textarea id="jsonInput" class="w-full h-40 p-2 mb-4 bg-gray-800 text-white border border-gray-600" placeholder="Paste your JSON here..."></textarea>
+    </header>
+    <main class="flex flex-auto flex-col items-center justify-center w-full max-w-3xl px-4">
+        <textarea id="jsonInput" class="w-full p-2 bg-gray-700 text-white rounded mb-4" rows="10" placeholder="Paste your JSON here..."></textarea>
         <div class="flex mb-4">
-            <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2" onclick="convertToTypeScript()">Convert to TypeScript</button>
-            <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded" onclick="convertToPython()">Convert to Python</button>
+            <button class="bg-indigo-500 text-white px-4 py-2 rounded mr-2" onclick="convertToTypeScript()">Convert to TypeScript</button>
+            <button class="bg-yellow-500 text-white px-4 py-2 rounded" onclick="convertToPython()">Convert to Python</button>
         </div>
-        <textarea id="output" class="w-full h-40 p-2 bg-gray-800 text-white border border-gray-600" placeholder="Output will appear here..." readonly></textarea>
-    </div>
+        <pre id="output" class="w-full p-4 bg-gray-700 text-white rounded hidden"></pre>
+    </main>
     <script>
-        function shareTool() {
-            alert('Sharing functionality is not implemented.');
-        }
-
-        function supportDeveloper() {
-            alert('Support functionality is not implemented.');
+        function clearOutput() {
+            const output = document.getElementById('output');
+            output.textContent = '';
+            output.classList.add('hidden');
         }
 
         function convertToTypeScript() {
+            clearOutput();
             const jsonInput = document.getElementById('jsonInput').value;
             try {
                 const jsonObject = JSON.parse(jsonInput);
-                const typeScript = jsonToTypeScript(jsonObject);
-                document.getElementById('output').value = typeScript;
+                const tsOutput = jsonToTypeScript(jsonObject);
+                displayOutput(tsOutput);
             } catch (error) {
-                alert('Invalid JSON');
+                displayOutput('Invalid JSON: ' + error.message);
             }
         }
 
         function convertToPython() {
+            clearOutput();
             const jsonInput = document.getElementById('jsonInput').value;
             try {
                 const jsonObject = JSON.parse(jsonInput);
-                const python = jsonToPython(jsonObject);
-                document.getElementById('output').value = python;
+                const pyOutput = jsonToPython(jsonObject);
+                displayOutput(pyOutput);
             } catch (error) {
-                alert('Invalid JSON');
+                displayOutput('Invalid JSON: ' + error.message);
             }
         }
 
-        function jsonToTypeScript(obj, indent = '  ') {
-            let output = '';
-            for (let key in obj) {
-                const value = obj[key];
-                const type = Array.isArray(value) ? 'any[]' : typeof value;
-                output += `${indent}${key}: ${type};\n`;
+        function jsonToTypeScript(jsonObject, indent = '') {
+            if (Array.isArray(jsonObject)) {
+                return `Array<${jsonToTypeScript(jsonObject[0], indent)}>`;
+            } else if (typeof jsonObject === 'object' && jsonObject !== null) {
+                let result = '{\n';
+                for (const key in jsonObject) {
+                    result += `${indent}  ${key}: ${jsonToTypeScript(jsonObject[key], indent + '  ')};\n`;
+                }
+                result += `${indent}}`;
+                return result;
+            } else {
+                return typeof jsonObject;
             }
-            return `interface RootObject {\n${output}}\n`;
         }
 
-        function jsonToPython(obj, indent = '    ') {
-            let output = 'class RootObject:\n';
-            for (let key in obj) {
-                let type = typeof obj[key];
-                if (Array.isArray(obj[key])) type = 'list';
-                if (obj[key] === null) type = 'Any';
-
-                output += `${indent}${key}: ${type}\n`;
+        function jsonToPython(jsonObject, indent = '') {
+            if (Array.isArray(jsonObject)) {
+                return `List[${jsonToPython(jsonObject[0], indent)}]`;
+            } else if (typeof jsonObject === 'object' && jsonObject !== null) {
+                let result = 'Dict[\n';
+                for (const key in jsonObject) {
+                    result += `${indent}  "${key}": ${jsonToPython(jsonObject[key], indent + '  ')},\n`;
+                }
+                result += `${indent}]`;
+                return result;
+            } else {
+                return typeof jsonObject === 'string' ? 'str' : typeof jsonObject;
             }
-            return `${output}`;
+        }
+
+        function displayOutput(content) {
+            const output = document.getElementById('output');
+            output.textContent = content;
+            output.classList.remove('hidden');
+        }
+
+        function shareTool() {
+            alert('Share this tool with others!');
+        }
+
+        function supportDeveloper() {
+            alert('Thank you for your support!');
         }
     </script>
 </body>
