@@ -4,55 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cold Outreach Subject Line Analyzer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #1a202c;
-            color: #edf2f7;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        .banner {
+            background-color: #333;
+            padding: 10px;
+        }
+        .button {
+            background-color: #4a90e2;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin: 0 4px;
         }
     </style>
 </head>
-<body class="flex flex-col items-center p-6">
-    <header class="w-full flex justify-between items-center py-4 mb-6 border-b border-gray-700">
-        <h1 class="text-2xl font-bold">Cold Outreach Subject Line Analyzer</h1>
+<body>
+    <div class="banner flex justify-between items-center">
+        <h1 class="text-xl">Cold Outreach Subject Line Analyzer</h1>
         <div>
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Share Tool</button>
-            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
+            <a href="#" class="button">Share Tool</a>
+            <a href="#" class="button">Support Developer</a>
         </div>
-    </header>
-    <main class="w-full max-w-lg">
-        <textarea id="subjectInput" class="w-full p-2 mb-4 bg-gray-800 text-white rounded" rows="3" placeholder="Enter your subject line..."></textarea>
-        <button onclick="analyzeSubjectLine()" class="w-full bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mb-4">Analyze</button>
-        <div id="analysisResult" class="bg-gray-800 p-4 rounded"></div>
-    </main>
+    </div>
+    <div class="container mx-auto mt-8 p-4">
+        <textarea id="subjectLine" class="w-full p-2 bg-gray-800 border border-gray-600 rounded-md" rows="2" placeholder="Enter subject line here..."></textarea>
+        <button onclick="analyzeSubjectLine()" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Analyze</button>
+        <div id="result" class="mt-4 p-4 bg-gray-800 border border-gray-600 rounded-md hidden"></div>
+    </div>
     <script>
         function analyzeSubjectLine() {
-            const input = document.getElementById('subjectInput').value;
-            const resultDiv = document.getElementById('analysisResult');
+            const subjectLine = document.getElementById('subjectLine').value;
+            let resultText = '';
 
-            if (!input.trim()) {
-                resultDiv.textContent = 'Please enter a subject line to analyze.';
-                return;
+            if (subjectLine.length < 10) {
+                resultText = 'Subject line is too short.';
+            } else if (subjectLine.length > 50) {
+                resultText = 'Subject line is too long.';
+            } else {
+                resultText = 'Subject line length is good.';
             }
 
-            let score = 0;
-            const words = input.split(' ');
+            const powerWords = ['exclusive', 'limited time', 'offer', 'free', 'urgent'];
+            const foundWords = powerWords.filter(word => subjectLine.toLowerCase().includes(word)).join(', ');
 
-            if (words.length < 5) score += 10;
-            if (/[?!]/.test(input)) score += 10;
-            if (/free|limited|offer/i.test(input)) score -= 10;
-            if (/[A-Z]/.test(input)) score += 5;
+            if (foundWords) {
+                resultText += ' Contains power words: ' + foundWords + '.';
+            } else {
+                resultText += ' No power words found.';
+            }
 
-            const feedback = `
-                Subject Line: "${input}"
-                Length Score: ${words.length < 5 ? 'Good' : 'Too long'}
-                Punctuation: ${/[?!]/.test(input) ? 'Engaging' : 'Neutral'}
-                Spammy Words: ${/free|limited|offer/i.test(input) ? 'Avoid' : 'Clean'}
-                Capitalization: ${/[A-Z]/.test(input) ? 'Attention Grabbing' : 'Neutral'}
-                Overall Score: ${score}/30
-            `;
-
-            resultDiv.textContent = feedback;
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = resultText;
+            resultDiv.classList.remove('hidden');
         }
     </script>
 </body>

@@ -6,99 +6,61 @@
     <title>JSON to TypeScript/Python Converter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #1a202c; color: #f7fafc; }
-        .hidden { display: none; }
+        body { background-color: #1a202c; color: #cbd5e0; }
+        textarea { resize: none; }
     </style>
 </head>
-<body class="flex flex-col items-center h-screen">
-    <header class="w-full p-4 bg-gray-800 shadow-md flex justify-between items-center">
-        <h1 class="text-xl font-bold">JSON Type Converter</h1>
+<body class="flex flex-col items-center min-h-screen p-4">
+    <header class="w-full flex justify-between items-center p-4 bg-gray-800 shadow-lg mb-4">
+        <h1 class="text-xl font-bold text-white">JSON to TypeScript/Python Converter</h1>
         <div>
-            <button class="bg-blue-500 text-white px-4 py-2 rounded mr-2" onclick="shareTool()">Share Tool</button>
-            <button class="bg-green-500 text-white px-4 py-2 rounded" onclick="supportDeveloper()">Support Developer</button>
+            <button onclick="shareTool()" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Share Tool</button>
+            <button onclick="supportDeveloper()" class="bg-green-500 text-white px-4 py-2 rounded">Support Developer</button>
         </div>
     </header>
-    <main class="flex flex-auto flex-col items-center justify-center w-full max-w-3xl px-4">
-        <textarea id="jsonInput" class="w-full p-2 bg-gray-700 text-white rounded mb-4" rows="10" placeholder="Paste your JSON here..."></textarea>
-        <div class="flex mb-4">
-            <button class="bg-indigo-500 text-white px-4 py-2 rounded mr-2" onclick="convertToTypeScript()">Convert to TypeScript</button>
-            <button class="bg-yellow-500 text-white px-4 py-2 rounded" onclick="convertToPython()">Convert to Python</button>
+    <main class="flex flex-col md:flex-row w-full max-w-4xl space-y-4 md:space-y-0 md:space-x-4">
+        <textarea id="jsonInput" class="w-full h-60 p-2 bg-gray-700 text-white rounded" placeholder="Paste JSON here..."></textarea>
+        <div class="flex flex-col w-full space-y-2">
+            <button onclick="convertToTypeScript()" class="w-full bg-indigo-500 text-white px-4 py-2 rounded">Convert to TypeScript</button>
+            <button onclick="convertToPython()" class="w-full bg-yellow-500 text-white px-4 py-2 rounded">Convert to Python</button>
         </div>
-        <pre id="output" class="w-full p-4 bg-gray-700 text-white rounded hidden"></pre>
+        <textarea id="codeOutput" class="w-full h-60 p-2 bg-gray-700 text-white rounded" placeholder="Converted code will appear here..." readonly></textarea>
     </main>
     <script>
-        function clearOutput() {
-            const output = document.getElementById('output');
-            output.textContent = '';
-            output.classList.add('hidden');
+        function shareTool() {
+            alert("Share this tool with your friends!");
+        }
+
+        function supportDeveloper() {
+            alert("Thank you for supporting the developer!");
         }
 
         function convertToTypeScript() {
-            clearOutput();
             const jsonInput = document.getElementById('jsonInput').value;
             try {
                 const jsonObject = JSON.parse(jsonInput);
-                const tsOutput = jsonToTypeScript(jsonObject);
-                displayOutput(tsOutput);
+                let tsOutput = '';
+                for (const [key, value] of Object.entries(jsonObject)) {
+                    tsOutput += `let ${key}: ${typeof value};\n`;
+                }
+                document.getElementById('codeOutput').value = tsOutput;
             } catch (error) {
-                displayOutput('Invalid JSON: ' + error.message);
+                document.getElementById('codeOutput').value = 'Invalid JSON input.';
             }
         }
 
         function convertToPython() {
-            clearOutput();
             const jsonInput = document.getElementById('jsonInput').value;
             try {
                 const jsonObject = JSON.parse(jsonInput);
-                const pyOutput = jsonToPython(jsonObject);
-                displayOutput(pyOutput);
+                let pythonOutput = '';
+                for (const [key, value] of Object.entries(jsonObject)) {
+                    pythonOutput += `${key} = ${JSON.stringify(value)}\n`;
+                }
+                document.getElementById('codeOutput').value = pythonOutput;
             } catch (error) {
-                displayOutput('Invalid JSON: ' + error.message);
+                document.getElementById('codeOutput').value = 'Invalid JSON input.';
             }
-        }
-
-        function jsonToTypeScript(jsonObject, indent = '') {
-            if (Array.isArray(jsonObject)) {
-                return `Array<${jsonToTypeScript(jsonObject[0], indent)}>`;
-            } else if (typeof jsonObject === 'object' && jsonObject !== null) {
-                let result = '{\n';
-                for (const key in jsonObject) {
-                    result += `${indent}  ${key}: ${jsonToTypeScript(jsonObject[key], indent + '  ')};\n`;
-                }
-                result += `${indent}}`;
-                return result;
-            } else {
-                return typeof jsonObject;
-            }
-        }
-
-        function jsonToPython(jsonObject, indent = '') {
-            if (Array.isArray(jsonObject)) {
-                return `List[${jsonToPython(jsonObject[0], indent)}]`;
-            } else if (typeof jsonObject === 'object' && jsonObject !== null) {
-                let result = 'Dict[\n';
-                for (const key in jsonObject) {
-                    result += `${indent}  "${key}": ${jsonToPython(jsonObject[key], indent + '  ')},\n`;
-                }
-                result += `${indent}]`;
-                return result;
-            } else {
-                return typeof jsonObject === 'string' ? 'str' : typeof jsonObject;
-            }
-        }
-
-        function displayOutput(content) {
-            const output = document.getElementById('output');
-            output.textContent = content;
-            output.classList.remove('hidden');
-        }
-
-        function shareTool() {
-            alert('Share this tool with others!');
-        }
-
-        function supportDeveloper() {
-            alert('Thank you for your support!');
         }
     </script>
 </body>

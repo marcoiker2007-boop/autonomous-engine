@@ -1,76 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Meta & OpenGraph Previewer</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { 
-            background-color: #1a202c;
-            color: #cbd5e0; 
-        }
-    </style>
 </head>
-<body>
-    <div class="container mx-auto p-4">
-        <header class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">Meta & OpenGraph Previewer</h1>
-            <div>
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2" onclick="shareTool()">Share Tool</button>
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2" onclick="supportDeveloper()">Support Developer</button>
-            </div>
-        </header>
-        <main>
-            <div class="mb-4">
-                <label for="urlInput" class="block text-sm font-medium text-gray-300">Enter URL:</label>
-                <input type="text" id="urlInput" class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded p-2" placeholder="https://example.com">
-            </div>
-            <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mb-4" onclick="previewMeta()">Preview Meta</button>
-            <div id="metaPreview" class="bg-gray-800 p-4 rounded border border-gray-700"></div>
-        </main>
+
+<body class="bg-gray-900 text-white">
+    <div class="flex justify-between items-center p-4 bg-gray-800">
+        <h1 class="text-xl font-bold">Meta & OpenGraph Previewer</h1>
+        <div>
+            <button onclick="shareTool()" class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded">Share Tool</button>
+            <button onclick="supportDeveloper()" class="bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded">Support Developer</button>
+        </div>
     </div>
+
+    <div class="p-4 space-y-4">
+        <input id="urlInput" type="url" placeholder="Enter website URL" class="w-full p-2 bg-gray-800 border border-gray-700 rounded" oninput="fetchMeta()">
+        <div id="preview" class="p-4 bg-gray-800 border border-gray-700 rounded">
+            <p class="text-gray-400">Enter a URL to see its Meta & OpenGraph preview.</p>
+        </div>
+    </div>
+
     <script>
+        async function fetchMeta() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) return;
+            try {
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, 'text/html');
+                const metaTags = doc.querySelectorAll('meta');
+                let previewContent = '';
+                metaTags.forEach(tag => {
+                    const property = tag.getAttribute('property') || tag.getAttribute('name');
+                    const content = tag.getAttribute('content');
+                    if (property && content) {
+                        previewContent += `<p><strong>${property}:</strong> ${content}</p>`;
+                    }
+                });
+                document.getElementById('preview').innerHTML = previewContent || '<p class="text-gray-400">No Meta or OpenGraph data found.</p>';
+            } catch (error) {
+                document.getElementById('preview').innerHTML = '<p class="text-red-500">Error fetching data.</p>';
+            }
+        }
+
         function shareTool() {
-            navigator.share({
-                title: 'Meta & OpenGraph Previewer',
-                text: 'Check out this tool!',
-                url: window.location.href
-            }).catch(console.error);
+            alert('Share Tool feature coming soon!');
         }
 
         function supportDeveloper() {
-            window.open('https://www.paypal.com/paypalme/supportdev', '_blank');
-        }
-
-        function previewMeta() {
-            const url = document.getElementById('urlInput').value;
-            if (!url) {
-                alert('Please enter a valid URL.');
-                return;
-            }
-
-            fetch(`https://cors-anywhere.herokuapp.com/${url}`)
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const metaTags = doc.querySelectorAll('meta');
-                    let metaContent = '<h2 class="text-xl font-bold mb-2">Meta Tags</h2><ul class="list-disc pl-5">';
-                    
-                    metaTags.forEach(tag => {
-                        const name = tag.getAttribute('name') || tag.getAttribute('property') || 'N/A';
-                        const content = tag.getAttribute('content') || 'N/A';
-                        metaContent += `<li><strong>${name}:</strong> ${content}</li>`;
-                    });
-
-                    metaContent += '</ul>';
-                    document.getElementById('metaPreview').innerHTML = metaContent;
-                })
-                .catch(error => {
-                    document.getElementById('metaPreview').innerHTML = `<p class="text-red-500">Error retrieving meta tags: ${error.message}</p>`;
-                });
+            alert('Support Developer feature coming soon!');
         }
     </script>
 </body>
+
 </html>
