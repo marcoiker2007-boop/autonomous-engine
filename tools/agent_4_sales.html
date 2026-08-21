@@ -7,61 +7,61 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #1a1a1a;
-            color: #f0f0f0;
-        }
-        .banner {
-            background-color: #333;
-            padding: 10px;
-        }
-        .button {
-            background-color: #4a90e2;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            text-decoration: none;
-            margin: 0 4px;
+            background-color: #1a202c;
+            color: #cbd5e0;
         }
     </style>
 </head>
-<body>
-    <div class="banner flex justify-between items-center">
-        <h1 class="text-xl">Cold Outreach Subject Line Analyzer</h1>
+<body class="flex flex-col items-center justify-center min-h-screen">
+    <header class="w-full bg-gray-800 p-4 flex justify-between items-center">
+        <h1 class="text-xl text-white">Cold Outreach Subject Line Analyzer</h1>
         <div>
-            <a href="#" class="button">Share Tool</a>
-            <a href="#" class="button">Support Developer</a>
+            <button onclick="shareTool()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Share Tool</button>
+            <button onclick="supportDeveloper()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
         </div>
-    </div>
-    <div class="container mx-auto mt-8 p-4">
-        <textarea id="subjectLine" class="w-full p-2 bg-gray-800 border border-gray-600 rounded-md" rows="2" placeholder="Enter subject line here..."></textarea>
-        <button onclick="analyzeSubjectLine()" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Analyze</button>
-        <div id="result" class="mt-4 p-4 bg-gray-800 border border-gray-600 rounded-md hidden"></div>
-    </div>
+    </header>
+    <main class="flex-grow w-full max-w-md p-4">
+        <div class="mb-4">
+            <label for="subjectLine" class="block text-sm font-medium text-gray-300">Enter Subject Line:</label>
+            <input type="text" id="subjectLine" class="mt-1 p-2 w-full border rounded bg-gray-700 text-white focus:outline-none focus:ring focus:border-blue-300" placeholder="Type your subject line here">
+        </div>
+        <button onclick="analyzeSubjectLine()" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">Analyze</button>
+        <div id="result" class="mt-4 text-sm"></div>
+    </main>
     <script>
+        function shareTool() {
+            alert('Share this tool with your friends!');
+        }
+
+        function supportDeveloper() {
+            alert('Thank you for supporting the developer!');
+        }
+
         function analyzeSubjectLine() {
             const subjectLine = document.getElementById('subjectLine').value;
-            let resultText = '';
-
-            if (subjectLine.length < 10) {
-                resultText = 'Subject line is too short.';
-            } else if (subjectLine.length > 50) {
-                resultText = 'Subject line is too long.';
-            } else {
-                resultText = 'Subject line length is good.';
-            }
-
-            const powerWords = ['exclusive', 'limited time', 'offer', 'free', 'urgent'];
-            const foundWords = powerWords.filter(word => subjectLine.toLowerCase().includes(word)).join(', ');
-
-            if (foundWords) {
-                resultText += ' Contains power words: ' + foundWords + '.';
-            } else {
-                resultText += ' No power words found.';
-            }
-
             const resultDiv = document.getElementById('result');
-            resultDiv.textContent = resultText;
-            resultDiv.classList.remove('hidden');
+
+            if (!subjectLine) {
+                resultDiv.innerText = 'Please enter a subject line to analyze.';
+                resultDiv.className = 'text-red-500 mt-4 text-sm';
+                return;
+            }
+
+            const analysis = performAnalysis(subjectLine);
+            resultDiv.innerText = `Analysis Result: ${analysis}`;
+            resultDiv.className = 'text-green-500 mt-4 text-sm';
+        }
+
+        function performAnalysis(subjectLine) {
+            // Dummy analysis logic for demonstration purposes
+            const length = subjectLine.length;
+            if (length < 10) {
+                return 'Too short. Try to add more details.';
+            } else if (length > 50) {
+                return 'Too long. Make it more concise.';
+            } else {
+                return 'Good length. Well-balanced.';
+            }
         }
     </script>
 </body>

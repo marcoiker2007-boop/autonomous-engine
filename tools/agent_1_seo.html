@@ -1,61 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Meta & OpenGraph Previewer</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #1a202c;
+            color: white;
+        }
+    </style>
 </head>
-
-<body class="bg-gray-900 text-white">
-    <div class="flex justify-between items-center p-4 bg-gray-800">
-        <h1 class="text-xl font-bold">Meta & OpenGraph Previewer</h1>
+<body class="flex flex-col items-center p-4">
+    <header class="w-full flex justify-between items-center bg-gray-800 p-4 rounded-md shadow-md">
+        <h1 class="text-xl font-bold">Live Meta & OpenGraph Previewer</h1>
         <div>
-            <button onclick="shareTool()" class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded">Share Tool</button>
-            <button onclick="supportDeveloper()" class="bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded">Support Developer</button>
+            <button onclick="shareTool()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Share Tool</button>
+            <button onclick="supportDeveloper()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
         </div>
-    </div>
+    </header>
 
-    <div class="p-4 space-y-4">
-        <input id="urlInput" type="url" placeholder="Enter website URL" class="w-full p-2 bg-gray-800 border border-gray-700 rounded" oninput="fetchMeta()">
-        <div id="preview" class="p-4 bg-gray-800 border border-gray-700 rounded">
-            <p class="text-gray-400">Enter a URL to see its Meta & OpenGraph preview.</p>
+    <main class="w-full max-w-2xl mt-6">
+        <div class="mb-4">
+            <label for="urlInput" class="block text-sm font-medium">Enter URL:</label>
+            <input id="urlInput" type="text" class="mt-1 w-full p-2 border border-gray-700 rounded" placeholder="https://example.com">
         </div>
-    </div>
+        <button onclick="fetchMeta()" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mb-6">Preview Meta</button>
+
+        <div id="preview" class="bg-gray-900 p-4 rounded shadow-md">
+            <h2 class="text-lg font-semibold mb-2">Meta & OpenGraph Preview:</h2>
+            <div id="metaContent" class="text-sm"></div>
+        </div>
+    </main>
 
     <script>
+        function shareTool() {
+            alert('Share this tool with others!');
+        }
+
+        function supportDeveloper() {
+            alert('Support the developer through donations!');
+        }
+
         async function fetchMeta() {
             const url = document.getElementById('urlInput').value;
-            if (!url) return;
+            if (!url) {
+                alert('Please enter a valid URL.');
+                return;
+            }
+
             try {
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
                 const data = await response.json();
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(data.contents, 'text/html');
-                const metaTags = doc.querySelectorAll('meta');
-                let previewContent = '';
+
+                const metaTags = doc.querySelectorAll('meta[property^="og:"]');
+                let content = '<ul>';
                 metaTags.forEach(tag => {
-                    const property = tag.getAttribute('property') || tag.getAttribute('name');
-                    const content = tag.getAttribute('content');
-                    if (property && content) {
-                        previewContent += `<p><strong>${property}:</strong> ${content}</p>`;
-                    }
+                    content += `<li><strong>${tag.getAttribute('property')}:</strong> ${tag.getAttribute('content')}</li>`;
                 });
-                document.getElementById('preview').innerHTML = previewContent || '<p class="text-gray-400">No Meta or OpenGraph data found.</p>';
+                content += '</ul>';
+                document.getElementById('metaContent').innerHTML = content || 'No OpenGraph data found.';
             } catch (error) {
-                document.getElementById('preview').innerHTML = '<p class="text-red-500">Error fetching data.</p>';
+                console.error('Error fetching meta:', error);
+                document.getElementById('metaContent').innerHTML = 'Error fetching meta data.';
             }
-        }
-
-        function shareTool() {
-            alert('Share Tool feature coming soon!');
-        }
-
-        function supportDeveloper() {
-            alert('Support Developer feature coming soon!');
         }
     </script>
 </body>
-
 </html>

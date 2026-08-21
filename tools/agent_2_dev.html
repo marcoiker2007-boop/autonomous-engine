@@ -6,46 +6,45 @@
     <title>JSON to TypeScript/Python Converter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #1a202c; color: #cbd5e0; }
-        textarea { resize: none; }
+        body { background-color: #1a202c; color: #e2e8f0; }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen p-4">
-    <header class="w-full flex justify-between items-center p-4 bg-gray-800 shadow-lg mb-4">
-        <h1 class="text-xl font-bold text-white">JSON to TypeScript/Python Converter</h1>
-        <div>
-            <button onclick="shareTool()" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">Share Tool</button>
-            <button onclick="supportDeveloper()" class="bg-green-500 text-white px-4 py-2 rounded">Support Developer</button>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-2xl">
+        <header class="flex justify-between mb-6">
+            <h1 class="text-2xl font-bold">JSON to TypeScript/Python Converter</h1>
+            <div>
+                <button onclick="shareTool()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Share Tool</button>
+                <button onclick="supportDeveloper()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
+            </div>
+        </header>
+        <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
+            <textarea id="jsonInput" class="w-full h-40 p-2 bg-gray-900 border border-gray-700 rounded-lg text-sm" placeholder="Paste your JSON here..."></textarea>
+            <div class="flex justify-between mt-4">
+                <button onclick="convertToTypeScript()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Convert to TypeScript</button>
+                <button onclick="convertToPython()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Convert to Python</button>
+            </div>
+            <pre id="output" class="mt-4 p-2 bg-gray-900 border border-gray-700 rounded-lg text-sm overflow-auto"></pre>
         </div>
-    </header>
-    <main class="flex flex-col md:flex-row w-full max-w-4xl space-y-4 md:space-y-0 md:space-x-4">
-        <textarea id="jsonInput" class="w-full h-60 p-2 bg-gray-700 text-white rounded" placeholder="Paste JSON here..."></textarea>
-        <div class="flex flex-col w-full space-y-2">
-            <button onclick="convertToTypeScript()" class="w-full bg-indigo-500 text-white px-4 py-2 rounded">Convert to TypeScript</button>
-            <button onclick="convertToPython()" class="w-full bg-yellow-500 text-white px-4 py-2 rounded">Convert to Python</button>
-        </div>
-        <textarea id="codeOutput" class="w-full h-60 p-2 bg-gray-700 text-white rounded" placeholder="Converted code will appear here..." readonly></textarea>
-    </main>
+    </div>
+
     <script>
         function shareTool() {
-            alert("Share this tool with your friends!");
+            alert('Use the URL to share this tool.');
         }
 
         function supportDeveloper() {
-            alert("Thank you for supporting the developer!");
+            alert('Thank you for your support!');
         }
 
         function convertToTypeScript() {
             const jsonInput = document.getElementById('jsonInput').value;
             try {
                 const jsonObject = JSON.parse(jsonInput);
-                let tsOutput = '';
-                for (const [key, value] of Object.entries(jsonObject)) {
-                    tsOutput += `let ${key}: ${typeof value};\n`;
-                }
-                document.getElementById('codeOutput').value = tsOutput;
-            } catch (error) {
-                document.getElementById('codeOutput').value = 'Invalid JSON input.';
+                const typeScriptOutput = jsonToTypeScript(jsonObject);
+                document.getElementById('output').textContent = typeScriptOutput;
+            } catch (e) {
+                document.getElementById('output').textContent = 'Invalid JSON input.';
             }
         }
 
@@ -53,14 +52,28 @@
             const jsonInput = document.getElementById('jsonInput').value;
             try {
                 const jsonObject = JSON.parse(jsonInput);
-                let pythonOutput = '';
-                for (const [key, value] of Object.entries(jsonObject)) {
-                    pythonOutput += `${key} = ${JSON.stringify(value)}\n`;
-                }
-                document.getElementById('codeOutput').value = pythonOutput;
-            } catch (error) {
-                document.getElementById('codeOutput').value = 'Invalid JSON input.';
+                const pythonOutput = jsonToPython(jsonObject);
+                document.getElementById('output').textContent = pythonOutput;
+            } catch (e) {
+                document.getElementById('output').textContent = 'Invalid JSON input.';
             }
+        }
+
+        function jsonToTypeScript(jsonObject) {
+            let result = 'type ConvertedType = {\n';
+            for (const [key, value] of Object.entries(jsonObject)) {
+                result += `  ${key}: ${typeof value};\n`;
+            }
+            result += '};';
+            return result;
+        }
+
+        function jsonToPython(jsonObject) {
+            let result = 'class ConvertedType:\n';
+            for (const [key, value] of Object.entries(jsonObject)) {
+                result += `  ${key}: ${typeof value === 'object' ? 'dict' : typeof value}\n`;
+            }
+            return result;
         }
     </script>
 </body>
