@@ -6,63 +6,70 @@
     <title>Cold Outreach Subject Line Analyzer</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #1a202c;
-            color: #cbd5e0;
-        }
+        body { background-color: #1a1a1a; color: #e2e8f0; }
+        .banner { background-color: #2d3748; }
+        .button { transition: background-color 0.3s; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen">
-    <header class="w-full bg-gray-800 p-4 flex justify-between items-center">
-        <h1 class="text-xl text-white">Cold Outreach Subject Line Analyzer</h1>
+    <div class="w-full p-4 banner flex justify-between items-center">
+        <h1 class="text-xl font-bold text-white">Cold Outreach Subject Line Analyzer</h1>
         <div>
-            <button onclick="shareTool()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Share Tool</button>
-            <button onclick="supportDeveloper()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Support Developer</button>
+            <button class="button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2">
+                Share Tool
+            </button>
+            <button class="button bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
+                Support Developer
+            </button>
         </div>
-    </header>
-    <main class="flex-grow w-full max-w-md p-4">
-        <div class="mb-4">
-            <label for="subjectLine" class="block text-sm font-medium text-gray-300">Enter Subject Line:</label>
-            <input type="text" id="subjectLine" class="mt-1 p-2 w-full border rounded bg-gray-700 text-white focus:outline-none focus:ring focus:border-blue-300" placeholder="Type your subject line here">
-        </div>
-        <button onclick="analyzeSubjectLine()" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full">Analyze</button>
-        <div id="result" class="mt-4 text-sm"></div>
-    </main>
+    </div>
+    <div class="w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-md">
+        <label for="subjectLine" class="block text-sm font-medium mb-2">Enter Subject Line:</label>
+        <input type="text" id="subjectLine" class="w-full p-2 mb-4 text-gray-900 rounded-md" placeholder="e.g., Unlock Your Potential">
+        <button id="analyzeButton" class="w-full bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mb-4">Analyze</button>
+        <div id="result" class="bg-gray-900 p-4 rounded-md"></div>
+    </div>
     <script>
-        function shareTool() {
-            alert('Share this tool with your friends!');
-        }
-
-        function supportDeveloper() {
-            alert('Thank you for supporting the developer!');
-        }
-
-        function analyzeSubjectLine() {
+        document.getElementById('analyzeButton').addEventListener('click', function() {
             const subjectLine = document.getElementById('subjectLine').value;
-            const resultDiv = document.getElementById('result');
+            let score = 0;
+            let feedback = [];
 
-            if (!subjectLine) {
-                resultDiv.innerText = 'Please enter a subject line to analyze.';
-                resultDiv.className = 'text-red-500 mt-4 text-sm';
-                return;
-            }
+            if (subjectLine.length > 0) {
+                if (subjectLine.length < 20) {
+                    score += 10;
+                    feedback.push("Good: Short length can be more engaging.");
+                } else if (subjectLine.length < 50) {
+                    score += 5;
+                    feedback.push("Neutral: Moderate length, try to be concise.");
+                } else {
+                    feedback.push("Consider shortening your subject line.");
+                }
 
-            const analysis = performAnalysis(subjectLine);
-            resultDiv.innerText = `Analysis Result: ${analysis}`;
-            resultDiv.className = 'text-green-500 mt-4 text-sm';
-        }
+                if (/^[A-Z]/.test(subjectLine)) {
+                    score += 5;
+                    feedback.push("Good: Starts with a capital letter.");
+                } else {
+                    feedback.push("Consider capitalizing the first letter.");
+                }
 
-        function performAnalysis(subjectLine) {
-            // Dummy analysis logic for demonstration purposes
-            const length = subjectLine.length;
-            if (length < 10) {
-                return 'Too short. Try to add more details.';
-            } else if (length > 50) {
-                return 'Too long. Make it more concise.';
+                if (/[!?]$/.test(subjectLine)) {
+                    score += 5;
+                    feedback.push("Good: Ends with a punctuation mark.");
+                } else {
+                    feedback.push("Consider adding a punctuation mark at the end.");
+                }
             } else {
-                return 'Good length. Well-balanced.';
+                feedback.push("The subject line is empty.");
             }
-        }
+
+            document.getElementById('result').innerHTML = `
+                <p class="font-bold">Score: ${score}/20</p>
+                <ul class="list-disc ml-5">
+                    ${feedback.map(f => `<li>${f}</li>`).join('')}
+                </ul>
+            `;
+        });
     </script>
 </body>
 </html>
